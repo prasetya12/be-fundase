@@ -36,6 +36,10 @@ const accountSchema = new mongoose.Schema(
             minlength:6,
             trim:true
         },
+        token:{
+            type:String,
+            required:true
+        },
         tokens:[
             {
                 token:{
@@ -54,12 +58,20 @@ const accountSchema = new mongoose.Schema(
 
 accountSchema.methods.generateAuthToken= async function(){
     const account = this
+    console.log(account,'halo')
     const token = jwt.sign({_id:account._id.toString()},'my_secret')
 
     account.tokens = account.tokens.concat({token})
+    account.token = token
     await account.save()
 
     return token
+}
+
+
+
+accountSchema.methods.updateAuthToken = async function(id){
+    console.log(id)
 }
 
 const Account = mongoose.model('Account',accountSchema)
